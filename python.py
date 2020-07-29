@@ -1,6 +1,6 @@
 import serial, time
 import cv2
-image_src = 'img.png'
+image_src = 'img.jpg'
 image_threshold = 127
 resolution = 400
 arduino = serial.Serial('COM4', 9600)
