@@ -134,6 +134,11 @@ double moveraPunto(double X, double Y) {
   servo1.write(angulo1);
   servo2.write(angulo2);
 }
+
+bool mensaje_retorno(){
+  //Envia mensaje a pc para enviar el siguente punto
+}
+
 double dibujaPunto(double X, double Y) {
   servo3.write(30);
   delay(100);
@@ -142,6 +147,7 @@ double dibujaPunto(double X, double Y) {
   servo3.write(90);
   delay(500);
   servo3.write(30);
+  mensaje_retorno();
 }
 
 double dibujaLineaA(double X, double Y) {//en proceso/////////////////
@@ -166,15 +172,12 @@ void setup()
 }
 
 void loop() {
-  //if (Serial.read() > 0) {
-  // String msg = Serial.readString();
-  // Serial.print(msg);
-  // float coord_x = 0.0;
-  // float coord_y = 0.0;
-  //bool msg_valido = parser(msg , coord_x, coord_y);//cor x y cord y valen ahoa las coordenadas del mensage
-  dibujaPunto(-8, 5);
-  dibujaPunto(-8, 4);
-  dibujaPunto(-7, 4);
-  dibujaPunto(-7, 5);
-  // }
+  if (Serial.read() > 0) {
+   String msg = Serial.readString();
+   //Serial.print(msg);
+   float coord_x = 0.0;
+   float coord_y = 0.0;
+   bool msg_valido = parser(msg , coord_x, coord_y);//cor x y cord y valen ahoa las coordenadas del mensage
+  dibujaPunto(coord_x, coord_y);
+  }
 }
