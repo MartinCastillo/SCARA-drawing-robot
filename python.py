@@ -1,12 +1,16 @@
 import serial, time
 import cv2
+image_src = 'img.png'
+image_threshold = 127
 arduino = serial.Serial('COM4', 9600)
 time.sleep(2)
-image = cv2.imread('src_imagen.png')
-threshold = cv2.
-
+image = cv2.imread(image_src)
+ret,threshold = cv2.threshold(image,image_threshold,255,cv2.THRESH_BINARY)
 drawing = False
 (y_s,x_s,r) = threshold.shape()
+arm_span = 20 #cm, max range of the arm
+margin = 5
+
 for y in range(y_s):
   for x in range(x_s):
     #Dibuja punto
@@ -15,6 +19,9 @@ for y in range(y_s):
       rawString = arduino.readline()
       if(rawString == "a"):
         drawing = False
-    arduino.write(bytes("{}".format(), 'utf-8'))
+    #Transform from pixels to cm
+    x = (x/x_s)*(arm_span-margin) + margin
+    y = (y/y_s)*(arm_span-margin) + margin
+    arduino.write(bytes("x{x}y{y}f".format(), 'utf-8'))
     drawing = True
 arduino.close()
