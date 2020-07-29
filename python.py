@@ -2,9 +2,12 @@ import serial, time
 import cv2
 image_src = 'img.png'
 image_threshold = 127
+resolution = 400
 arduino = serial.Serial('COM4', 9600)
 time.sleep(2)
 image = cv2.imread(image_src)
+image = cv2.resize(image,resolution,image.shape[1]//image.shape[0]*resolution)
+
 ret,threshold = cv2.threshold(image,image_threshold,255,cv2.THRESH_BINARY)
 drawing = False
 (y_s,x_s,r) = threshold.shape()
