@@ -94,49 +94,32 @@ double tetha(double x, double y) { //tetha
 // y: posición objetivo (eje y)
 // a1: valor donde se guardara el resultado del angulo 1. Angulo en grados
 // a2: valor donde se guardara el resultado del angulo 2. Angulo en grados
-void angulosMotores(double x, double y, double& a1, double& a2)
-{
+void angulosMotores(double x, double y, double& a1, double& a2) {
   double R = distancia(x, y);
   if (R > largo1 + largo2) {
     Serial.print("no llega el brazo");
   }
-  Serial.print("R: ");
-  Serial.println(R);
   double th = tetha(x, y);
-  Serial.print("th: ");
-  Serial.println(th);
   double D2 = (R * R - largo1 * largo1 - largo2 * largo2) / (2 * largo1 * largo2);
-  Serial.print("D2: ");
-  Serial.println(D2);
-
   double a2Radianes = acos(D2);
-  Serial.print("a2Radianes: ");
-  Serial.println(a2Radianes);
-
-
+  
   double a1Radianes = th - atan2((largo2 * sin(a2Radianes)) , (largo1 + largo2 * cos(a2Radianes)));
-  Serial.print("a1Radianes: ");
-  Serial.println(a1Radianes);
-
   // ahora guardamos los valores en grados en a1 y a2
   a1 = radianesAGrados(a1Radianes);
   a2 = radianesAGrados(a2Radianes);
 }
+
 double moveraPunto(double X, double Y) {
   double angulo1 = 0.00;
   double angulo2 = 0.00;
   angulosMotores(X, Y, angulo1, angulo2);
   angulo1 = angulo1 + 90;
-  Serial.print("angulo 1: ");
-  Serial.print(angulo1);
-  Serial.print(" , angulo 2: ");
+  //Serial.print("angulo 1: ");
+  //Serial.print(angulo1);
+  //Serial.print(" , angulo 2: ");
   Serial.println(angulo2);
   servo1.write(angulo1);
   servo2.write(angulo2);
-}
-
-bool mensaje_retorno(){
-  //Envia mensaje a pc para enviar el siguente punto
 }
 
 double dibujaPunto(double X, double Y) {
@@ -147,7 +130,8 @@ double dibujaPunto(double X, double Y) {
   servo3.write(90);
   delay(500);
   servo3.write(30);
-  mensaje_retorno();
+  //Envia mensaje a pc para enviar el siguente punto
+  Serial.print('a');
 }
 
 double dibujaLineaA(double X, double Y) {//en proceso/////////////////
@@ -158,26 +142,24 @@ double dibujaLineaA(double X, double Y) {//en proceso/////////////////
   servo3.write(30);
 }
 
-// codigo de arduino
 void setup()
 {
   Serial.begin(9600);
   servo1.attach(3);
   servo2.attach(5);
   servo3.attach(6);
-  //
   servo1.write(90);
   servo2.write(0);
   servo3.write(30);
 }
 
-void loop() {
+void loop()
+{
   if (Serial.read() > 0) {
    String msg = Serial.readString();
-   //Serial.print(msg);
    float coord_x = 0.0;
    float coord_y = 0.0;
    bool msg_valido = parser(msg , coord_x, coord_y);//cor x y cord y valen ahoa las coordenadas del mensage
-  dibujaPunto(coord_x, coord_y);
+   dibujaPunto(coord_x, coord_y);
   }
 }
